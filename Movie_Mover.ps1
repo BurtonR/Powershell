@@ -23,25 +23,26 @@ foreach($fileorFolder in $downloadedFiles)
 if($files.Count -eq 0)
 {
     Write-Host No files to move... -ForegroundColor Cyan
-#    exit
+    exit
 }
 
 foreach($file in $files)
 {    
-    Write-Host $file
-
     $result = test-path -path "$destination\*" -include $file
     if ($result -like "False")
     {
         Write-Host Moving: $file -ForegroundColor Yellow
-        #Copy-Item -Path $file.FullName -Destination $destination
         Move-Item -Path $file.FullName -Destination $destination
         Write-Host Moved: $file -ForegroundColor Green
+        
+        #delete the directory that had the movie in it.
+        Remove-Item $file.Directory -Recurse
+        Write-Host Deleted Directory: $file.Directory -ForegroundColor Red
     }
     else
     {        
         Write-Host The file: $file is already in $destination -ForegroundColor Gray
-        Remove-Item $file.FullName
+#        Remove-Item $file.FullName
         Write-Host $file has been removed from $origin -ForegroundColor Red
     }
 
